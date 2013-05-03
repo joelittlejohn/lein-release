@@ -186,7 +186,7 @@
 )
 
 (defn release [project & args]
-  (binding [config (or (:lein-release project) config)]
+  (binding [config (merge config (:lein-release project))]
     (let [current-version  (get project :version)
           release-version  (compute-release-version current-version)
           next-dev-version (compute-next-development-version (.replaceAll current-version "-SNAPSHOT" ""))
@@ -209,4 +209,3 @@
         (set-project-version! release-version next-dev-version)
         (scm! :add "project.clj")
         (scm! :commit "-m" (format "lein-release plugin: bumped version from %s to %s for next development cycle" release-version next-dev-version))))))
-
